@@ -20,7 +20,5 @@ members = [
 	"primitives/evm",
 	"primitives/rpc",
 	"primitives/self-contained",
-	"template/node",
-	"template/runtime",
 ]
 resolver = "2"
