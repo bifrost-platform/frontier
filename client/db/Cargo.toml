@@ -1,19 +1,19 @@
 [package]
 name = "fc-db"
 version = "2.0.0-dev"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = [""]
 description = "Frontier database backend"
 edition = "2021"
-license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
-repository = "https://github.com/paritytech/frontier/"
+license = ""
+repository = "https://github.com/bifrost-platform/frontier/"
 
 [dependencies]
 kvdb-rocksdb = "0.14.0"
 parking_lot = "0.11.2"
 
 codec = { package = "parity-scale-codec", version = "2.0.0", features = ["derive"] }
-sp-core = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sp-database = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
+sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-database = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
 
 fp-storage = { version = "2.0.0-dev", path = "../../primitives/storage" }

@@ -1,23 +1,23 @@
 [package]
 name = "fc-consensus"
 version = "2.0.0-dev"
-authors = ["Parity Technologies <admin@parity.io>"]
+authors = [""]
 description = "Frontier consensus for substrate"
 edition = "2021"
-license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
-repository = "https://github.com/paritytech/frontier/"
+license = ""
+repository = "https://github.com/bifrost-platform/frontier/"
 
 [dependencies]
 async-trait = "0.1"
 thiserror = "1.0"
 
-sp-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sp-block-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sp-blockchain = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sp-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sp-runtime = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sc-client-api = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
-sc-consensus = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.17" }
+sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-block-builder = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-blockchain = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-consensus = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sc-client-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sc-consensus = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
 
 fp-consensus = { version = "2.0.0-dev", path = "../../primitives/consensus" }
 fp-rpc = { version = "3.0.0-dev", path = "../../primitives/rpc" }

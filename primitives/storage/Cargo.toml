@@ -1,10 +1,10 @@
 [package]
 name = "fp-storage"
 version = "2.0.0"
-authors = ["Parity Technologies <admin@parity.io"]
+authors = [""]
 edition = "2021"
 description = "Storage primitives for Ethereum RPC (web3) compatibility layer for Substrate."
-license = "Apache-2.0"
+license = ""
 
 [dependencies]
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
