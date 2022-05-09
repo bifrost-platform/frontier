@@ -23,19 +23,19 @@ rlp = "0.5"
 tokio = { version = "1.14", features = [ "sync" ] }
 
 codec = { package = "parity-scale-codec", version = "2.0.0" }
-sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sp-blockchain = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sp-block-builder = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sp-io = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sp-storage = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sc-client-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sc-network = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sc-rpc = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sc-service = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sc-transaction-pool = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
-sc-transaction-pool-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-v1.0.0" }
+sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-blockchain = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-block-builder = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-io = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-storage = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-client-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-network = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-rpc = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-service = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-transaction-pool = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-transaction-pool-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
 
 fp-rpc = { version = "3.0.0-dev", path = "../../primitives/rpc" }
 fp-storage = { version = "2.0.0-dev", path = "../../primitives/storage" }
