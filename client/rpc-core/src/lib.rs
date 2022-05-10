@@ -22,10 +22,12 @@ mod eth;
 mod eth_pubsub;
 mod net;
 mod web3;
+mod txpool;
 
 pub use self::{
 	eth::{EthApi, EthApiServer, EthFilterApi, EthFilterApiServer},
 	eth_pubsub::{EthPubSubApi, EthPubSubApiServer},
 	net::{NetApi, NetApiServer},
+	txpool::{TxPoolApi, TxPoolApiServer},
 	web3::{Web3Api, Web3ApiServer},
 };
