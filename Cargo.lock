@@ -1312,6 +1312,7 @@ dependencies = [
  "sc-service",
  "sc-transaction-pool",
  "sc-transaction-pool-api",
+ "sha3 0.9.1",
  "sp-api",
  "sp-block-builder",
  "sp-blockchain",

@@ -23,9 +23,11 @@ mod block;
 mod block_number;
 mod bytes;
 mod call_request;
+mod content;
 mod fee;
 mod filter;
 mod index;
+mod inspect;
 mod log;
 mod receipt;
 mod sync;
@@ -35,12 +37,30 @@ mod work;
 
 pub mod pubsub;
 
+use std::collections::HashMap;
+use ethereum_types::{H160, U256};
+use serde::Serialize;
+
+#[derive(Debug, Serialize)]
+pub struct TxPoolResult<T: Serialize> {
+	pub pending: T,
+	pub queued: T,
+}
+
+pub trait GetT {
+	fn get(hash: ethereum_types::H256, from_address: H160, txn: &ethereum::TransactionV2) -> Self;
+}
+
+pub type PoolTransactionMap<T> = HashMap<H160, HashMap<U256, T>>;
+
 pub use self::{
 	account_info::{AccountInfo, EthAccount, ExtAccountInfo, RecoveredAccount, StorageProof},
 	block::{Block, BlockTransactions, Header, Rich, RichBlock, RichHeader},
 	block_number::BlockNumber,
 	bytes::Bytes,
 	call_request::CallRequest,
+	content::Transaction as PoolTransaction,
+	inspect::Summary as PoolSummary,
 	fee::{FeeHistory, FeeHistoryCache, FeeHistoryCacheItem},
 	filter::{
 		Filter, FilterAddress, FilterChanges, FilterPool, FilterPoolItem, FilterType,

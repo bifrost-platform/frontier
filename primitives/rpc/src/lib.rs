@@ -18,7 +18,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use codec::{Decode, Encode};
-use ethereum::Log;
+pub use ethereum::{Log, TransactionV0 as LegacyTransaction, TransactionV2 as Transaction};
 use ethereum_types::Bloom;
 use sp_core::{H160, H256, U256};
 use sp_runtime::{traits::Block as BlockT, Permill};
@@ -33,6 +33,18 @@ pub struct TransactionStatus {
 	pub contract_address: Option<H160>,
 	pub logs: Vec<Log>,
 	pub logs_bloom: Bloom,
+}
+
+#[derive(Eq, PartialEq, Clone, Encode, Decode, sp_runtime::RuntimeDebug)]
+pub struct TxPoolResponseLegacy {
+	pub ready: Vec<LegacyTransaction>,
+	pub future: Vec<LegacyTransaction>,
+}
+
+#[derive(Eq, PartialEq, Clone, Encode, Decode, sp_runtime::RuntimeDebug)]
+pub struct TxPoolResponse {
+	pub ready: Vec<Transaction>,
+	pub future: Vec<Transaction>,
 }
 
 impl Default for TransactionStatus {
@@ -184,6 +196,19 @@ sp_api::decl_runtime_apis! {
 		#[changed_in(2)]
 		fn convert_transaction(transaction: ethereum::TransactionV0) -> <Block as BlockT>::Extrinsic;
 	}
+
+	#[api_version(2)]
+	pub trait TxPoolRuntimeApi {
+		#[changed_in(2)]
+		fn extrinsic_filter(
+			xt_ready: Vec<<Block as BlockT>::Extrinsic>,
+			xt_future: Vec<<Block as BlockT>::Extrinsic>,
+		) -> TxPoolResponseLegacy;
+		fn extrinsic_filter(
+			xt_ready: Vec<<Block as BlockT>::Extrinsic>,
+			xt_future: Vec<<Block as BlockT>::Extrinsic>,
+		) -> TxPoolResponse;
+	}
 }
 
 pub trait ConvertTransaction<E> {
@@ -193,6 +218,7 @@ pub trait ConvertTransaction<E> {
 // `NoTransactionConverter` is a non-instantiable type (an enum with no variants),
 // so we are guaranteed at compile time that `NoTransactionConverter` can never be instantiated.
 pub enum NoTransactionConverter {}
+
 impl<E> ConvertTransaction<E> for NoTransactionConverter {
 	// `convert_transaction` is a method taking `&self` as a parameter, so it can only be called via an instance of type Self,
 	// so we are guaranteed at compile time that this method can never be called.

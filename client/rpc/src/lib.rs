@@ -21,6 +21,7 @@ mod eth_pubsub;
 mod net;
 mod overrides;
 mod web3;
+mod txpool;
 
 pub use self::{
 	eth::{EthApi, EthBlockDataCache, EthFilterApi, EthTask},
@@ -31,6 +32,7 @@ pub use self::{
 		SchemaV3Override, StorageOverride,
 	},
 	web3::Web3Api,
+	txpool::TxPoolApi,
 };
 
 pub use ethereum::TransactionV2 as EthereumTransaction;
@@ -38,7 +40,7 @@ use ethereum_types::{H160, H256};
 use evm::{ExitError, ExitReason};
 pub use fc_rpc_core::{
 	types::TransactionMessage, EthApiServer, EthFilterApiServer, EthPubSubApiServer, NetApiServer,
-	Web3ApiServer,
+	Web3ApiServer, TxPoolApiServer,
 };
 use jsonrpc_core::{Error, ErrorCode, Value};
 use sp_core::hashing::keccak_256;
@@ -66,9 +68,9 @@ pub mod frontier_backend_client {
 		backend: &fc_db::Backend<B>,
 		number: Option<BlockNumber>,
 	) -> RpcResult<Option<BlockId<B>>>
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
-		C: HeaderBackend<B> + Send + Sync + 'static,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
+			C: HeaderBackend<B> + Send + Sync + 'static,
 	{
 		Ok(match number.unwrap_or(BlockNumber::Latest) {
 			BlockNumber::Hash { hash, .. } => load_hash::<B>(backend, hash).unwrap_or(None),
@@ -83,8 +85,8 @@ pub mod frontier_backend_client {
 		backend: &fc_db::Backend<B>,
 		hash: H256,
 	) -> RpcResult<Option<BlockId<B>>>
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
 	{
 		let substrate_hash = backend
 			.mapping()
@@ -100,8 +102,8 @@ pub mod frontier_backend_client {
 	pub fn load_cached_schema<B: BlockT>(
 		backend: &fc_db::Backend<B>,
 	) -> RpcResult<Option<Vec<(EthereumStorageSchema, H256)>>>
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
 	{
 		let cache = backend
 			.meta()
@@ -114,8 +116,8 @@ pub mod frontier_backend_client {
 		backend: &fc_db::Backend<B>,
 		new_cache: Vec<(EthereumStorageSchema, H256)>,
 	) -> RpcResult<()>
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
 	{
 		backend
 			.meta()
@@ -128,11 +130,11 @@ pub mod frontier_backend_client {
 		client: &C,
 		at: BlockId<B>,
 	) -> EthereumStorageSchema
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
-		C: StorageProvider<B, BE> + Send + Sync + 'static,
-		BE: Backend<B> + 'static,
-		BE::State: StateBackend<BlakeTwo256>,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
+			C: StorageProvider<B, BE> + Send + Sync + 'static,
+			BE: Backend<B> + 'static,
+			BE::State: StateBackend<BlakeTwo256>,
 	{
 		match client.storage(&at, &StorageKey(PALLET_ETHEREUM_SCHEMA.to_vec())) {
 			Ok(Some(bytes)) => Decode::decode(&mut &bytes.0[..])
@@ -143,9 +145,9 @@ pub mod frontier_backend_client {
 	}
 
 	pub fn is_canon<B: BlockT, C>(client: &C, target_hash: H256) -> bool
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
-		C: HeaderBackend<B> + Send + Sync + 'static,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
+			C: HeaderBackend<B> + Send + Sync + 'static,
 	{
 		if let Ok(Some(number)) = client.number(target_hash) {
 			if let Ok(Some(header)) = client.header(BlockId::Number(number)) {
@@ -161,9 +163,9 @@ pub mod frontier_backend_client {
 		transaction_hash: H256,
 		only_canonical: bool,
 	) -> RpcResult<Option<(H256, u32)>>
-	where
-		B: BlockT<Hash = H256> + Send + Sync + 'static,
-		C: HeaderBackend<B> + Send + Sync + 'static,
+		where
+			B: BlockT<Hash=H256> + Send + Sync + 'static,
+			C: HeaderBackend<B> + Send + Sync + 'static,
 	{
 		let transaction_metadata = backend
 			.mapping()
@@ -292,7 +294,7 @@ impl EthDevSigner {
 				0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11,
 				0x11, 0x11, 0x11, 0x11,
 			])
-			.expect("Test key is valid; qed")],
+				.expect("Test key is valid; qed")],
 		}
 	}
 }
