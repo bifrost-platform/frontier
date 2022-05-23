@@ -31,27 +31,13 @@ mod inspect;
 mod log;
 mod receipt;
 mod sync;
+mod trace;
 mod transaction;
 mod transaction_request;
+mod txpool;
 mod work;
 
 pub mod pubsub;
-
-use std::collections::HashMap;
-use ethereum_types::{H160, U256};
-use serde::Serialize;
-
-#[derive(Debug, Serialize)]
-pub struct TxPoolResult<T: Serialize> {
-	pub pending: T,
-	pub queued: T,
-}
-
-pub trait GetT {
-	fn get(hash: ethereum_types::H256, from_address: H160, txn: &ethereum::TransactionV2) -> Self;
-}
-
-pub type PoolTransactionMap<T> = HashMap<H160, HashMap<U256, T>>;
 
 pub use self::{
 	account_info::{AccountInfo, EthAccount, ExtAccountInfo, RecoveredAccount, StorageProof},
@@ -73,7 +59,9 @@ pub use self::{
 		ChainStatus, EthProtocolInfo, PeerCount, PeerInfo, PeerNetworkInfo, PeerProtocolsInfo,
 		Peers, PipProtocolInfo, SyncInfo, SyncStatus, TransactionStats,
 	},
+	trace::{RequestBlockId, RequestBlockTag},
 	transaction::{LocalTransactionStatus, RichRawTransaction, Transaction},
 	transaction_request::{TransactionMessage, TransactionRequest},
+	txpool::{GetT, TxPoolResult, PoolTransactionMap},
 	work::Work,
 };

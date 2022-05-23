@@ -12,6 +12,7 @@ members = [
 	"frame/evm/precompile/dispatch",
 	"frame/evm/precompile/curve25519",
 	"client/consensus",
+	"client/evm-tracing",
 	"client/rpc-core",
 	"client/rpc",
 	"client/db",
@@ -19,6 +20,8 @@ members = [
 	"primitives/consensus",
 	"primitives/evm",
 	"primitives/rpc",
+	"primitives/rpc-debug",
+	"primitives/rpc-evm-tracing-events",
 	"primitives/self-contained",
 ]
 resolver = "2"

@@ -1269,6 +1269,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "fc-evm-tracing"
+version = "1.0.0"
+dependencies = [
+ "ethereum-types",
+ "fp-rpc-debug",
+ "fp-rpc-evm-tracing-events",
+ "hex",
+ "parity-scale-codec",
+ "serde",
+ "serde_json",
+ "sp-std",
+]
+
+[[package]]
 name = "fc-mapping-sync"
 version = "2.0.0-dev"
 dependencies = [
@@ -1292,11 +1306,14 @@ dependencies = [
  "ethereum-types",
  "evm",
  "fc-db",
+ "fc-evm-tracing",
  "fc-rpc-core",
  "fp-rpc",
+ "fp-rpc-debug",
  "fp-storage",
  "futures 0.3.17",
  "hex",
+ "hex-literal",
  "jsonrpc-core",
  "jsonrpc-core-client",
  "jsonrpc-pubsub",
@@ -1312,6 +1329,7 @@ dependencies = [
  "sc-service",
  "sc-transaction-pool",
  "sc-transaction-pool-api",
+ "sc-utils",
  "sha3 0.9.1",
  "sp-api",
  "sp-block-builder",
@@ -1321,6 +1339,7 @@ dependencies = [
  "sp-runtime",
  "sp-storage",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -1329,6 +1348,8 @@ version = "1.1.0-dev"
 dependencies = [
  "ethereum",
  "ethereum-types",
+ "fc-evm-tracing",
+ "futures 0.3.17",
  "jsonrpc-core",
  "jsonrpc-core-client",
  "jsonrpc-derive",
@@ -1446,6 +1467,38 @@ dependencies = [
  "sp-io",
  "sp-runtime",
  "sp-std",
+]
+
+[[package]]
+name = "fp-rpc-debug"
+version = "1.0.0"
+dependencies = [
+ "environmental",
+ "ethereum",
+ "ethereum-types",
+ "hex",
+ "parity-scale-codec",
+ "serde",
+ "serde_json",
+ "sp-api",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "fp-rpc-evm-tracing-events"
+version = "1.0.0"
+dependencies = [
+ "environmental",
+ "ethereum",
+ "ethereum-types",
+ "evm",
+ "evm-gasometer",
+ "evm-runtime",
+ "parity-scale-codec",
+ "sp-runtime-interface",
 ]
 
 [[package]]
@@ -1923,6 +1976,15 @@ name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "hex-literal"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ebdb29d2ea9ed0083cd8cece49bbd968021bd99b0849edb4a9a7ee0fdf6a4e0"
 
 [[package]]
 name = "hex_fmt"
@@ -6443,9 +6505,9 @@ checksum = "360dfd1d6d30e05fda32ace2c8c70e9c0a9da713275777f5a4dbb8a1893930c6"
 
 [[package]]
 name = "tracing"
-version = "0.1.30"
+version = "0.1.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d8d93354fe2a8e50d5953f5ae2e47a3fc2ef03292e7ea46e3cc38f549525fb9"
+checksum = "5d0ecdcb44a79f0fe9844f0c4f33a342cbcbb5117de8001e6ba0dc2351327d09"
 dependencies = [
  "cfg-if 1.0.0",
  "pin-project-lite 0.2.7",
@@ -6455,9 +6517,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-attributes"
-version = "0.1.19"
+version = "0.1.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8276d9a4a3a558d7b7ad5303ad50b53d58264641b82914b7ada36bd762e7a716"
+checksum = "cc6b8ad3567499f98a1db7a752b07a7c8c7c7c34c332ec00effb2b0027974b7c"
 dependencies = [
  "proc-macro2",
  "quote",
