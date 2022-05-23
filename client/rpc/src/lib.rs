@@ -16,14 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+mod debug;
 mod eth;
 mod eth_pubsub;
 mod net;
 mod overrides;
-mod web3;
+mod trace;
 mod txpool;
+mod web3;
 
 pub use self::{
+	debug::{Debug, DebugHandler},
 	eth::{EthApi, EthBlockDataCache, EthFilterApi, EthTask},
 	eth_pubsub::{EthPubSubApi, HexEncodedIdProvider},
 	net::NetApi,
@@ -31,8 +34,9 @@ pub use self::{
 		OverrideHandle, RuntimeApiStorageOverride, SchemaV1Override, SchemaV2Override,
 		SchemaV3Override, StorageOverride,
 	},
-	web3::Web3Api,
+	trace::{Trace, CacheBatchId, CacheRequester, CacheTask},
 	txpool::TxPoolApi,
+	web3::Web3Api,
 };
 
 pub use ethereum::TransactionV2 as EthereumTransaction;

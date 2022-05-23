@@ -18,16 +18,20 @@
 
 pub mod types;
 
+mod debug;
 mod eth;
 mod eth_pubsub;
 mod net;
 mod web3;
+mod trace;
 mod txpool;
 
 pub use self::{
+	debug::{TraceParams, Debug, DebugServer},
 	eth::{EthApi, EthApiServer, EthFilterApi, EthFilterApiServer},
 	eth_pubsub::{EthPubSubApi, EthPubSubApiServer},
 	net::{NetApi, NetApiServer},
+	trace::{FilterRequest, Trace, TraceServer},
 	txpool::{TxPoolApi, TxPoolApiServer},
 	web3::{Web3Api, Web3ApiServer},
 };
