@@ -26,7 +26,7 @@ mod txpool;
 mod web3;
 
 pub use self::{
-	debug::{Debug, DebugHandler},
+	debug::{Debug, DebugHandler, DebugRequester, DebugServer},
 	eth::{EthApi, EthBlockDataCache, EthFilterApi, EthTask},
 	eth_pubsub::{EthPubSubApi, HexEncodedIdProvider},
 	net::NetApi,
@@ -34,7 +34,7 @@ pub use self::{
 		OverrideHandle, RuntimeApiStorageOverride, SchemaV1Override, SchemaV2Override,
 		SchemaV3Override, StorageOverride,
 	},
-	trace::{Trace, CacheBatchId, CacheRequester, CacheTask},
+	trace::{Trace, CacheBatchId, CacheRequester, CacheTask, TraceServer},
 	txpool::TxPoolApi,
 	web3::Web3Api,
 };
