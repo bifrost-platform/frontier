@@ -19,6 +19,7 @@ members = [
 	"client/mapping-sync",
 	"primitives/consensus",
 	"primitives/evm",
+	"primitives/ext",
 	"primitives/rpc",
 	"primitives/rpc-debug",
 	"primitives/rpc-evm-tracing-events",
