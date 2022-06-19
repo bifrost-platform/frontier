@@ -1,0 +1,29 @@
+[package]
+name = "fp-ext"
+version = "1.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ethereum-types = { version = "0.12", default-features = false }
+
+fp-rpc-evm-tracing-events = { path = "../rpc-evm-tracing-events", default-features = false }
+
+# Substrate
+codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
+sp-externalities = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
+sp-runtime-interface = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
+sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
+
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"ethereum-types/std",
+	"fp-rpc-evm-tracing-events/std",
+	"sp-externalities/std",
+	"sp-runtime-interface/std",
+	"sp-std/std",
+]
