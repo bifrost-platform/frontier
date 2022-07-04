@@ -24,5 +24,6 @@ members = [
 	"primitives/rpc-debug",
 	"primitives/rpc-evm-tracing-events",
 	"primitives/self-contained",
+	"runtime/evm_tracer",
 ]
 resolver = "2"

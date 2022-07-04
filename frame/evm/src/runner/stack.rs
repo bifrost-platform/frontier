@@ -54,15 +54,15 @@ impl<T: Config> Runner<T> {
 		precompiles: &'precompiles T::PrecompilesType,
 		f: F,
 	) -> Result<ExecutionInfo<R>, Error<T>>
-	where
-		F: FnOnce(
-			&mut StackExecutor<
-				'config,
-				'precompiles,
-				SubstrateStackState<'_, 'config, T>,
-				T::PrecompilesType,
-			>,
-		) -> (ExitReason, R),
+		where
+			F: FnOnce(
+				&mut StackExecutor<
+					'config,
+					'precompiles,
+					SubstrateStackState<'_, 'config, T>,
+					T::PrecompilesType,
+				>,
+			) -> (ExitReason, R),
 	{
 		let base_fee = T::FeeCalculator::min_gas_price();
 		// Gas price check is skipped when performing a gas estimation.
@@ -494,7 +494,7 @@ impl<'vicinity, 'config, T: Config> BackendT for SubstrateStackState<'vicinity, 
 }
 
 impl<'vicinity, 'config, T: Config> StackStateT<'config>
-	for SubstrateStackState<'vicinity, 'config, T>
+for SubstrateStackState<'vicinity, 'config, T>
 {
 	fn metadata(&self) -> &StackSubstateMetadata<'config> {
 		self.substate.metadata()
@@ -586,7 +586,7 @@ impl<'vicinity, 'config, T: Config> StackStateT<'config>
 			transfer.value.low_u128().unique_saturated_into(),
 			ExistenceRequirement::AllowDeath,
 		)
-		.map_err(|_| ExitError::OutOfFund)
+			.map_err(|_| ExitError::OutOfFund)
 	}
 
 	fn reset_balance(&mut self, _address: H160) {
