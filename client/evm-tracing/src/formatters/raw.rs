@@ -9,7 +9,7 @@ impl super::ResponseFormatter for Formatter {
 
 	fn format(listener: Listener) -> Option<TransactionTrace> {
 		Some(TransactionTrace::Raw {
-			step_logs: listener.step_logs,
+			struct_logs: listener.struct_logs,
 			gas: listener.final_gas.into(),
 			return_value: listener.return_value,
 		})

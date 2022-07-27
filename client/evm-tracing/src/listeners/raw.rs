@@ -1,7 +1,7 @@
 use ethereum_types::{H160, H256};
 use std::{collections::btree_map::BTreeMap, vec, vec::Vec};
 
-use crate::types::{convert_memory, single::RawStepLog, ContextType};
+use crate::types::{convert_memory, single::RawStructLog, ContextType};
 use fp_rpc_evm_tracing_events::{
 	runtime::{Capture, ExitReason},
 	Event, GasometerEvent, Listener as ListenerT, RuntimeEvent, StepEventFilter,
@@ -16,7 +16,7 @@ pub struct Listener {
 	new_context: bool,
 	context_stack: Vec<Context>,
 
-	pub step_logs: Vec<RawStepLog>,
+	pub struct_logs: Vec<RawStructLog>,
 	pub return_value: Vec<u8>,
 	pub final_gas: u64,
 }
@@ -54,7 +54,7 @@ impl Listener {
 			disable_memory,
 			disable_stack,
 
-			step_logs: vec![],
+			struct_logs: vec![],
 			return_value: vec![],
 			final_gas: 0,
 
@@ -187,7 +187,7 @@ impl Listener {
 							Some(context.storage_cache.clone())
 						};
 
-						self.step_logs.push(RawStepLog {
+						self.struct_logs.push(RawStructLog {
 							depth: depth.into(),
 							gas: gas.into(),
 							gas_cost: gas_cost.into(),
