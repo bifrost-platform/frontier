@@ -1,5 +1,6 @@
 use ethereum_types::{H160, H256};
 use std::{collections::btree_map::BTreeMap, vec, vec::Vec};
+use std::str::from_utf8;
 
 use crate::types::{convert_memory, single::RawStructLog, ContextType};
 use fp_rpc_evm_tracing_events::{
@@ -16,6 +17,7 @@ pub struct Listener {
 	new_context: bool,
 	context_stack: Vec<Context>,
 
+	pub failed: bool,
 	pub struct_logs: Vec<RawStructLog>,
 	pub return_value: Vec<u8>,
 	pub final_gas: u64,
@@ -54,6 +56,7 @@ impl Listener {
 			disable_memory,
 			disable_stack,
 
+			failed: false,
 			struct_logs: vec![],
 			return_value: vec![],
 			final_gas: 0,
@@ -178,6 +181,10 @@ impl Listener {
 							memory,
 							stack,
 						} = current_step;
+
+						if from_utf8(&*opcode).unwrap() == "Revert" {
+							self.failed = true;
+						}
 
 						let memory = memory.map(convert_memory);
 

@@ -33,6 +33,7 @@ pub enum TransactionTrace {
 	/// Classical output of `debug_trace`.
 	#[serde(rename_all = "camelCase")]
 	Raw {
+		failed: bool,
 		gas: U256,
 		#[serde(with = "hex")]
 		return_value: Vec<u8>,
