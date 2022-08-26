@@ -515,7 +515,7 @@ impl<T: Config> Pallet<T> {
 			}
 		}
 
-		if gas_limit >= T::BlockGasLimit::get() {
+		if gas_limit > T::BlockGasLimit::get() {
 			return Err(InvalidTransaction::Custom(
 				TransactionValidationError::InvalidGasLimit as u8,
 			)
