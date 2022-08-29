@@ -279,14 +279,14 @@ fn pending_runtime_api<'a, B: BlockT, C, BE, A: ChainApi>(
 	client: &'a C,
 	graph: &'a Pool<A>,
 ) -> Result<sp_api::ApiRef<'a, C::Api>>
-where
-	B: BlockT<Hash = H256> + Send + Sync + 'static,
-	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-	C: HeaderBackend<B> + Send + Sync + 'static,
-	C::Api: BlockBuilder<B> + EthereumRuntimeRPCApi<B>,
-	BE: Backend<B> + 'static,
-	BE::State: StateBackend<BlakeTwo256>,
-	A: ChainApi<Block = B> + 'static,
+	where
+		B: BlockT<Hash=H256> + Send + Sync + 'static,
+		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+		C: HeaderBackend<B> + Send + Sync + 'static,
+		C::Api: BlockBuilder<B> + EthereumRuntimeRPCApi<B>,
+		BE: Backend<B> + 'static,
+		BE::State: StateBackend<BlakeTwo256>,
+		A: ChainApi<Block=B> + 'static,
 {
 	// In case of Pending, we need an overlayed state to query over.
 	let api = client.runtime_api();
@@ -318,13 +318,13 @@ async fn filter_range_logs<B: BlockT, C, BE>(
 	from: NumberFor<B>,
 	to: NumberFor<B>,
 ) -> Result<()>
-where
-	B: BlockT<Hash = H256> + Send + Sync + 'static,
-	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-	C: HeaderBackend<B> + Send + Sync + 'static,
-	C::Api: EthereumRuntimeRPCApi<B>,
-	BE: Backend<B> + 'static,
-	BE::State: StateBackend<BlakeTwo256>,
+	where
+		B: BlockT<Hash=H256> + Send + Sync + 'static,
+		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+		C: HeaderBackend<B> + Send + Sync + 'static,
+		C::Api: EthereumRuntimeRPCApi<B>,
+		BE: Backend<B> + 'static,
+		BE::State: StateBackend<BlakeTwo256>,
 {
 	// Max request duration of 10 seconds.
 	let max_duration = time::Duration::from_secs(10);
@@ -494,6 +494,13 @@ fn fee_details(
 ) -> Result<FeeDetails> {
 	match (request_gas_price, request_max_fee, request_priority) {
 		(gas_price, None, None) => {
+			// 0 set request would be None
+			let gas_price = if gas_price.unwrap_or_default().is_zero() {
+				None
+			} else {
+				gas_price
+			};
+
 			// Legacy request, all default to gas price.
 			Ok(FeeDetails {
 				gas_price,
@@ -503,6 +510,14 @@ fn fee_details(
 		}
 		(_, max_fee, max_priority) => {
 			// eip-1559
+
+			// 0 set request would be None
+			let max_fee = if max_fee.unwrap_or_default().is_zero() {
+				None
+			} else {
+				max_fee
+			};
+
 			// Ensure `max_priority_fee_per_gas` is less or equal to `max_fee_per_gas`.
 			if let Some(max_priority) = max_priority {
 				let max_fee = max_fee.unwrap_or_default();
@@ -522,16 +537,16 @@ fn fee_details(
 }
 
 impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
-where
-	B: BlockT<Hash = H256> + Send + Sync + 'static,
-	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-	C: HeaderBackend<B> + Send + Sync + 'static,
-	C::Api: BlockBuilder<B> + ConvertTransactionRuntimeApi<B> + EthereumRuntimeRPCApi<B>,
-	BE: Backend<B> + 'static,
-	BE::State: StateBackend<BlakeTwo256>,
-	P: TransactionPool<Block = B> + Send + Sync + 'static,
-	A: ChainApi<Block = B> + 'static,
-	CT: fp_rpc::ConvertTransaction<<B as BlockT>::Extrinsic> + Send + Sync + 'static,
+	where
+		B: BlockT<Hash=H256> + Send + Sync + 'static,
+		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+		C: HeaderBackend<B> + Send + Sync + 'static,
+		C::Api: BlockBuilder<B> + ConvertTransactionRuntimeApi<B> + EthereumRuntimeRPCApi<B>,
+		BE: Backend<B> + 'static,
+		BE::State: StateBackend<BlakeTwo256>,
+		P: TransactionPool<Block=B> + Send + Sync + 'static,
+		A: ChainApi<Block=B> + 'static,
+		CT: fp_rpc::ConvertTransaction<<B as BlockT>::Extrinsic> + Send + Sync + 'static,
 {
 	fn protocol_version(&self) -> Result<u64> {
 		Ok(1)
@@ -1041,7 +1056,7 @@ where
 					{
 						Ok(extrinsic) => extrinsic,
 						Err(_) => {
-							return Box::pin(future::err(internal_err("cannot access runtime api")))
+							return Box::pin(future::err(internal_err("cannot access runtime api")));
 						}
 					}
 				} else {
@@ -1062,7 +1077,7 @@ where
 			_ => {
 				return Box::pin(future::err(internal_err(
 					"ConvertTransactionRuntimeApi version not supported",
-				)))
+				)));
 			}
 		};
 
@@ -1133,7 +1148,7 @@ where
 					{
 						Ok(extrinsic) => extrinsic,
 						Err(_) => {
-							return Box::pin(future::err(internal_err("cannot access runtime api")))
+							return Box::pin(future::err(internal_err("cannot access runtime api")));
 						}
 					}
 				} else {
@@ -1147,14 +1162,14 @@ where
 					convert_transaction.convert_transaction(transaction.clone())
 				} else {
 					return Box::pin(future::err(internal_err(
-					"No TransactionConverter is provided and the runtime api ConvertTransactionRuntimeApi is not found"
-				)));
+						"No TransactionConverter is provided and the runtime api ConvertTransactionRuntimeApi is not found"
+					)));
 				}
 			}
 			_ => {
 				return Box::pin(future::err(internal_err(
 					"ConvertTransactionRuntimeApi version not supported",
-				)))
+				)));
 			}
 		};
 
@@ -1223,7 +1238,7 @@ where
 						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
 				} else {
 					#[allow(deprecated)]
-					let legacy_block = api.current_block_before_version_2(&id)
+						let legacy_block = api.current_block_before_version_2(&id)
 						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?;
 					if let Some(block) = legacy_block {
 						Some(block.into())
@@ -1247,7 +1262,7 @@ where
 				if api_version == 1 {
 					// Legacy pre-london
 					#[allow(deprecated)]
-					let info = api.call_before_version_2(
+						let info = api.call_before_version_2(
 						&id,
 						from.unwrap_or_default(),
 						to,
@@ -1258,15 +1273,15 @@ where
 						nonce,
 						false,
 					)
-					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &info.value)?;
 					Ok(Bytes(info.value))
 				} else if api_version >= 2 && api_version < 4 {
 					// Post-london
 					#[allow(deprecated)]
-					let info = api.call_before_version_4(
+						let info = api.call_before_version_4(
 						&id,
 						from.unwrap_or_default(),
 						to,
@@ -1278,8 +1293,8 @@ where
 						nonce,
 						false,
 					)
-					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &info.value)?;
 					Ok(Bytes(info.value))
@@ -1320,7 +1335,7 @@ where
 				if api_version == 1 {
 					// Legacy pre-london
 					#[allow(deprecated)]
-					let info = api.create_before_version_2(
+						let info = api.create_before_version_2(
 						&id,
 						from.unwrap_or_default(),
 						data,
@@ -1330,8 +1345,8 @@ where
 						nonce,
 						false,
 					)
-					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &[])?;
 
@@ -1342,7 +1357,7 @@ where
 				} else if api_version >= 2 && api_version < 4 {
 					// Post-london
 					#[allow(deprecated)]
-					let info = api.create_before_version_4(
+						let info = api.create_before_version_4(
 						&id,
 						from.unwrap_or_default(),
 						data,
@@ -1353,8 +1368,8 @@ where
 						nonce,
 						false,
 					)
-					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &[])?;
 
@@ -1518,9 +1533,7 @@ where
 			//
 			// To solve that, and if we introduce historical gas estimation, we'd need to increase that default.
 			#[rustfmt::skip]
-			let executable = move |
-				request, gas_limit, api_version, api: sp_api::ApiRef<'_, C::Api>, estimate_mode
-			| -> Result<ExecutableResult> {
+				let executable = move |request, gas_limit, api_version, api: sp_api::ApiRef<'_, C::Api>, estimate_mode| -> Result<ExecutableResult> {
 				let CallRequest {
 					from,
 					to,
@@ -1553,8 +1566,8 @@ where
 								nonce,
 								estimate_mode,
 							)
-							.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-							.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
+								.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+								.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
 						} else if api_version < 4 {
 							// Post-london
 							#[allow(deprecated)]
@@ -1570,8 +1583,8 @@ where
 								nonce,
 								estimate_mode,
 							)
-							.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-							.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
+								.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+								.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
 						} else {
 							// Post-london + access list support
 							let access_list = access_list.unwrap_or_default();
@@ -1593,8 +1606,8 @@ where
 										.collect(),
 								),
 							)
-							.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-							.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
+								.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+								.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
 						};
 
 						(info.exit_reason, info.value, info.used_gas)
@@ -1613,8 +1626,8 @@ where
 								nonce,
 								estimate_mode,
 							)
-							.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-							.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
+								.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+								.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
 						} else if api_version < 4 {
 							// Post-london
 							#[allow(deprecated)]
@@ -1629,8 +1642,8 @@ where
 								nonce,
 								estimate_mode,
 							)
-							.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-							.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
+								.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+								.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
 						} else {
 							// Post-london + access list support
 							let access_list = access_list.unwrap_or_default();
@@ -1651,8 +1664,8 @@ where
 										.collect(),
 								),
 							)
-							.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-							.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
+								.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+								.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?
 						};
 
 						(info.exit_reason, Vec::new(), info.used_gas)
@@ -1665,9 +1678,9 @@ where
 				})
 			};
 			let api_version = if let Ok(Some(api_version)) =
-				client
-					.runtime_api()
-					.api_version::<dyn EthereumRuntimeRPCApi<B>>(&BlockId::Hash(best_hash))
+			client
+				.runtime_api()
+				.api_version::<dyn EthereumRuntimeRPCApi<B>>(&BlockId::Hash(best_hash))
 			{
 				api_version
 			} else {
@@ -1696,7 +1709,7 @@ where
 					return Err(internal_err(format!(
 						"gas required exceeds allowance {}",
 						cap
-					)))
+					)));
 				}
 				// If the transaction reverts, there are two possible cases,
 				// it can revert because the called contract feels that it does not have enough
@@ -1722,7 +1735,7 @@ where
 								return Err(internal_err(format!(
 									"gas required exceeds allowance {}",
 									cap
-								)))
+								)));
 							}
 							// The execution has been done with block gas limit, so it is not a lack of gas from the user.
 							other => error_on_execution_failure(&other, &data)?,
@@ -1800,7 +1813,7 @@ where
 				hash,
 				true,
 			)
-			.map_err(|err| internal_err(format!("{:?}", err)))?
+				.map_err(|err| internal_err(format!("{:?}", err)))?
 			{
 				Some((hash, index)) => (hash, index as usize),
 				None => {
@@ -1808,7 +1821,7 @@ where
 					let best_block: BlockId<B> = BlockId::Hash(client.info().best_hash);
 
 					let api_version = if let Ok(Some(api_version)) =
-						api.api_version::<dyn EthereumRuntimeRPCApi<B>>(&best_block)
+					api.api_version::<dyn EthereumRuntimeRPCApi<B>>(&best_block)
 					{
 						api_version
 					} else {
@@ -1847,7 +1860,7 @@ where
 						})?
 					} else {
 						#[allow(deprecated)]
-						let legacy = api.extrinsic_filter_before_version_2(&best_block, xts)
+							let legacy = api.extrinsic_filter_before_version_2(&best_block, xts)
 							.map_err(|err| {
 								internal_err(format!(
 									"fetch runtime extrinsic filter failed: {:?}",
@@ -1947,7 +1960,7 @@ where
 			match (block, statuses) {
 				(Some(block), Some(statuses)) => {
 					if let (Some(transaction), Some(status)) =
-						(block.transactions.get(index), statuses.get(index))
+					(block.transactions.get(index), statuses.get(index))
 					{
 						return Ok(Some(transaction_build(
 							transaction.clone(),
@@ -2007,7 +2020,7 @@ where
 			match (block, statuses) {
 				(Some(block), Some(statuses)) => {
 					if let (Some(transaction), Some(status)) =
-						(block.transactions.get(index), statuses.get(index))
+					(block.transactions.get(index), statuses.get(index))
 					{
 						return Ok(Some(transaction_build(
 							transaction.clone(),
@@ -2038,7 +2051,7 @@ where
 				hash,
 				true,
 			)
-			.map_err(|err| internal_err(format!("{:?}", err)))?
+				.map_err(|err| internal_err(format!("{:?}", err)))?
 			{
 				Some((hash, index)) => (hash, index as usize),
 				None => return Ok(None),
@@ -2103,7 +2116,7 @@ where
 									return Err(internal_err(format!(
 										"Unknown receipt for request {}",
 										hash
-									)))
+									)));
 								}
 							}
 						} else {
@@ -2276,7 +2289,7 @@ where
 					from_number,
 					current_number,
 				)
-				.await?;
+					.await?;
 			}
 			Ok(ret)
 		})
@@ -2490,9 +2503,9 @@ impl<B: BlockT, C, BE> EthFilterApi<B, C, BE> {
 }
 
 impl<B, C, BE> EthFilterApi<B, C, BE>
-where
-	B: BlockT<Hash = H256> + Send + Sync + 'static,
-	C: HeaderBackend<B> + Send + Sync + 'static,
+	where
+		B: BlockT<Hash=H256> + Send + Sync + 'static,
+		C: HeaderBackend<B> + Send + Sync + 'static,
 {
 	fn create_filter(&self, filter_type: FilterType) -> Result<U256> {
 		let block_number =
@@ -2528,13 +2541,13 @@ where
 }
 
 impl<B, C, BE> EthFilterApiT for EthFilterApi<B, C, BE>
-where
-	B: BlockT<Hash = H256> + Send + Sync + 'static,
-	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-	C: HeaderBackend<B> + Send + Sync + 'static,
-	C::Api: EthereumRuntimeRPCApi<B>,
-	BE: Backend<B> + 'static,
-	BE::State: StateBackend<BlakeTwo256>,
+	where
+		B: BlockT<Hash=H256> + Send + Sync + 'static,
+		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+		C: HeaderBackend<B> + Send + Sync + 'static,
+		C::Api: EthereumRuntimeRPCApi<B>,
+		BE: Backend<B> + 'static,
+		BE::State: StateBackend<BlakeTwo256>,
 {
 	fn new_filter(&self, filter: Filter) -> Result<U256> {
 		self.create_filter(FilterType::Log(filter))
@@ -2698,7 +2711,7 @@ where
 						from_number,
 						current_number,
 					)
-					.await?;
+						.await?;
 
 					Ok(FilterChanges::Logs(ret))
 				}
@@ -2772,7 +2785,7 @@ where
 				from_number,
 				current_number,
 			)
-			.await?;
+				.await?;
 			Ok(ret)
 		})
 	}
@@ -2797,13 +2810,13 @@ where
 pub struct EthTask<B, C, BE>(PhantomData<(B, C, BE)>);
 
 impl<B, C, BE> EthTask<B, C, BE>
-where
-	B: BlockT<Hash = H256>,
-	C: ProvideRuntimeApi<B> + StorageProvider<B, BE> + BlockchainEvents<B>,
-	C: HeaderBackend<B> + Send + Sync + 'static,
-	C::Api: EthereumRuntimeRPCApi<B>,
-	BE: Backend<B> + 'static,
-	BE::State: StateBackend<BlakeTwo256>,
+	where
+		B: BlockT<Hash=H256>,
+		C: ProvideRuntimeApi<B> + StorageProvider<B, BE> + BlockchainEvents<B>,
+		C: HeaderBackend<B> + Send + Sync + 'static,
+		C::Api: EthereumRuntimeRPCApi<B>,
+		BE: Backend<B> + 'static,
+		BE::State: StateBackend<BlakeTwo256>,
 {
 	/// Task that caches at which best hash a new EthereumStorageSchema was inserted in the Runtime Storage.
 	pub async fn ethereum_schema_cache_task(client: Arc<C>, backend: Arc<fc_db::Backend<B>>) {
@@ -2856,7 +2869,7 @@ where
 								Decode::decode(&mut &data.0[..]).unwrap();
 							// Cache new entry and overwrite the old database value.
 							if let Ok(Some(old_cache)) =
-								frontier_backend_client::load_cached_schema::<B>(backend.as_ref())
+							frontier_backend_client::load_cached_schema::<B>(backend.as_ref())
 							{
 								let mut new_cache: Vec<(EthereumStorageSchema, H256)> = old_cache;
 								match &new_cache[..] {
@@ -2872,12 +2885,12 @@ where
 											backend.as_ref(),
 											new_cache,
 										)
-										.map_err(|err| {
-											warn!(
+											.map_err(|err| {
+												warn!(
 												"Error schema cache insert for genesis: {:?}",
 												err
 											);
-										});
+											});
 									}
 								}
 							} else {
@@ -2939,7 +2952,7 @@ where
 		}
 		// Calculates the cache for a single block
 		#[rustfmt::skip]
-		let fee_history_cache_item = |hash: H256, elasticity: Permill| -> (
+			let fee_history_cache_item = |hash: H256, elasticity: Permill| -> (
 			FeeHistoryCacheItem,
 			Option<u64>
 		) {
@@ -3051,7 +3064,7 @@ where
 		// Commits the result to cache
 		let commit_if_any = |item: FeeHistoryCacheItem, key: Option<u64>| {
 			if let (Some(block_number), Ok(fee_history_cache)) =
-				(key, &mut fee_history_cache.lock())
+			(key, &mut fee_history_cache.lock())
 			{
 				fee_history_cache.insert(block_number, item);
 				// We want to remain within the configured cache bounds.
