@@ -1,4 +1,7 @@
-use frame_support::{assert_err, assert_ok, unsigned::TransactionValidityError};
+use fp_self_contained::CheckedExtrinsic;
+use frame_support::{
+	assert_err, assert_ok, unsigned::TransactionValidityError, weights::GetDispatchInfo,
+};
 use rustc_hex::{FromHex, ToHex};
 use sp_runtime::{
 	traits::Applyable,
