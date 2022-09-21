@@ -173,7 +173,7 @@ pub mod pallet {
 							// Normalize to GWEI.
 							let increase = scaled_basefee
 								.checked_div(U256::from(1_000_000))
-								.unwrap_or(U256::zero());
+								.unwrap_or_else(U256::zero);
 							*bf = bf.saturating_add(U256::from(increase));
 						} else {
 							Self::deposit_event(Event::BaseFeeOverflow);
@@ -191,7 +191,7 @@ pub mod pallet {
 							// Normalize to GWEI.
 							let decrease = scaled_basefee
 								.checked_div(U256::from(1_000_000))
-								.unwrap_or(U256::zero());
+								.unwrap_or_else(U256::zero);
 							*bf = bf.saturating_sub(U256::from(decrease));
 						} else {
 							Self::deposit_event(Event::BaseFeeOverflow);
