@@ -80,6 +80,7 @@ pub struct EthApi<B: BlockT, C, P, CT, BE, H: ExHashT, A: ChainApi> {
 	block_data_cache: Arc<EthBlockDataCache<B>>,
 	fee_history_limit: u64,
 	fee_history_cache: FeeHistoryCache,
+	execute_gas_limit_multiplier: u64,
 	_marker: PhantomData<(B, BE)>,
 }
 
@@ -98,6 +99,7 @@ impl<B: BlockT, C, P, CT, BE, H: ExHashT, A: ChainApi> EthApi<B, C, P, CT, BE, H
 		block_data_cache: Arc<EthBlockDataCache<B>>,
 		fee_history_limit: u64,
 		fee_history_cache: FeeHistoryCache,
+		execute_gas_limit_multiplier: u64,
 	) -> Self {
 		Self {
 			client,
@@ -113,6 +115,7 @@ impl<B: BlockT, C, P, CT, BE, H: ExHashT, A: ChainApi> EthApi<B, C, P, CT, BE, H
 			block_data_cache,
 			fee_history_limit,
 			fee_history_cache,
+			execute_gas_limit_multiplier,
 			_marker: PhantomData,
 		}
 	}
@@ -1240,33 +1243,34 @@ where
 					"failed to retrieve Runtime Api version"
 				)));
 			};
+
+		let block = if api_version > 1 {
+			api.current_block(&id).map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+		} else {
+			#[allow(deprecated)]
+				let legacy_block = api
+				.current_block_before_version_2(&id)
+				.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?;
+			legacy_block.map(|block| block.into())
+		};
+
+		let block_gas_limit = block.ok_or_else(|| internal_err("block unavailable, cannot query gas limit"))?.header.gas_limit;
+		let max_gas_limit = block_gas_limit * self.execute_gas_limit_multiplier;
+
 		// use given gas limit or query current block's limit
 		let gas_limit = match gas {
-			Some(amount) => amount,
-			None => {
-				let block = if api_version > 1 {
-					api.current_block(&id)
-						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-				} else {
-					#[allow(deprecated)]
-					let legacy_block = api.current_block_before_version_2(&id)
-						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?;
-					if let Some(block) = legacy_block {
-						Some(block.into())
-					} else {
-						None
-					}
-				};
-
-				if let Some(block) = block {
-					block.header.gas_limit
-				} else {
+			Some(amount) => {
+				if amount > max_gas_limit {
 					return Err(internal_err(format!(
-						"block unavailable, cannot query gas limit"
+						"provided gas limit is too high (can be up to {}x the block gas limit)",
+						self.execute_gas_limit_multiplier
 					)));
 				}
+				amount
 			}
+			None => max_gas_limit,
 		};
+
 		let data = data.map(|d| d.0).unwrap_or_default();
 		match to {
 			Some(to) => {
@@ -1434,6 +1438,7 @@ where
 	) -> BoxFuture<Result<U256>> {
 		let client = Arc::clone(&self.client);
 		let block_data_cache = Arc::clone(&self.block_data_cache);
+		let execute_gas_limit_multiplier = self.execute_gas_limit_multiplier.clone();
 
 		Box::pin(async move {
 			// Define the lower bound of estimate
@@ -1478,6 +1483,7 @@ where
 				let schema =
 					frontier_backend_client::onchain_storage_schema::<B, C, BE>(&client, id);
 				let block = block_data_cache.current_block(schema, substrate_hash).await;
+
 				if let Some(block) = block {
 					Ok(block.header.gas_limit)
 				} else {
@@ -1485,13 +1491,20 @@ where
 				}
 			};
 
+			let max_gas_limit = get_current_block_gas_limit().await? * U256::from(execute_gas_limit_multiplier);
+
 			// Determine the highest possible gas limits
 			let mut highest = match request.gas {
-				Some(gas) => gas,
-				None => {
-					// query current block's gas limit
-					get_current_block_gas_limit().await?
+				Some(amount) => {
+					if amount > max_gas_limit {
+						return Err(internal_err(format!(
+							"provided gas limit is too high (can be up to {}x the block gas limit)",
+							execute_gas_limit_multiplier
+						)));
+					}
+					amount
 				}
+				None => max_gas_limit,
 			};
 
 			let api = client.runtime_api();
@@ -1736,7 +1749,7 @@ where
 							used_gas: _,
 						} = executable(
 							request.clone(),
-							get_current_block_gas_limit().await?,
+							max_gas_limit,
 							api_version,
 							client.runtime_api(),
 							estimate_mode,
