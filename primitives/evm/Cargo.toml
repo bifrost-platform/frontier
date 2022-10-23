@@ -17,8 +17,8 @@ evm = { version = "0.33.1", default-features = false, features = ["with-codec"] 
 serde = { version = "1.0.101", features = ["derive"], optional = true }
 
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
-sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
+sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "testnet-fork", default-features = false }
+sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "testnet-fork", default-features = false }
 
 [features]
 default = ["std"]
