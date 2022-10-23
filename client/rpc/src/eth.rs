@@ -279,14 +279,14 @@ fn pending_runtime_api<'a, B: BlockT, C, BE, A: ChainApi>(
 	client: &'a C,
 	graph: &'a Pool<A>,
 ) -> Result<sp_api::ApiRef<'a, C::Api>>
-	where
-		B: BlockT<Hash=H256> + Send + Sync + 'static,
-		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-		C: HeaderBackend<B> + Send + Sync + 'static,
-		C::Api: BlockBuilder<B> + EthereumRuntimeRPCApi<B>,
-		BE: Backend<B> + 'static,
-		BE::State: StateBackend<BlakeTwo256>,
-		A: ChainApi<Block=B> + 'static,
+where
+	B: BlockT<Hash = H256> + Send + Sync + 'static,
+	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+	C: HeaderBackend<B> + Send + Sync + 'static,
+	C::Api: BlockBuilder<B> + EthereumRuntimeRPCApi<B>,
+	BE: Backend<B> + 'static,
+	BE::State: StateBackend<BlakeTwo256>,
+	A: ChainApi<Block = B> + 'static,
 {
 	// In case of Pending, we need an overlayed state to query over.
 	let api = client.runtime_api();
@@ -298,14 +298,21 @@ fn pending_runtime_api<'a, B: BlockT, C, BE, A: ChainApi>(
 		.map(|in_pool_tx| in_pool_tx.data().clone())
 		.collect::<Vec<<B as BlockT>::Extrinsic>>();
 	// Manually initialize the overlay.
-	let header = client.header(best).unwrap().unwrap();
-	api.initialize_block(&best, &header)
-		.map_err(|e| internal_err(format!("Runtime api access error: {:?}", e)))?;
-	// Apply the ready queue to the best block's state.
-	for xt in xts {
-		let _ = api.apply_extrinsic(&best, xt);
+	if let Ok(Some(header)) = client.header(best) {
+		let parent_hash = BlockId::Hash(*header.parent_hash());
+		api.initialize_block(&parent_hash, &header)
+			.map_err(|e| internal_err(format!("Runtime api access error: {:?}", e)))?;
+		// Apply the ready queue to the best block's state.
+		for xt in xts {
+			let _ = api.apply_extrinsic(&best, xt);
+		}
+		Ok(api)
+	} else {
+		Err(internal_err(format!(
+			"Cannot get header for block {:?}",
+			best
+		)))
 	}
-	Ok(api)
 }
 
 async fn filter_range_logs<B: BlockT, C, BE>(
@@ -318,13 +325,13 @@ async fn filter_range_logs<B: BlockT, C, BE>(
 	from: NumberFor<B>,
 	to: NumberFor<B>,
 ) -> Result<()>
-	where
-		B: BlockT<Hash=H256> + Send + Sync + 'static,
-		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-		C: HeaderBackend<B> + Send + Sync + 'static,
-		C::Api: EthereumRuntimeRPCApi<B>,
-		BE: Backend<B> + 'static,
-		BE::State: StateBackend<BlakeTwo256>,
+where
+	B: BlockT<Hash = H256> + Send + Sync + 'static,
+	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+	C: HeaderBackend<B> + Send + Sync + 'static,
+	C::Api: EthereumRuntimeRPCApi<B>,
+	BE: Backend<B> + 'static,
+	BE::State: StateBackend<BlakeTwo256>,
 {
 	// Max request duration of 10 seconds.
 	let max_duration = time::Duration::from_secs(10);
@@ -537,16 +544,16 @@ fn fee_details(
 }
 
 impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
-	where
-		B: BlockT<Hash=H256> + Send + Sync + 'static,
-		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-		C: HeaderBackend<B> + Send + Sync + 'static,
-		C::Api: BlockBuilder<B> + ConvertTransactionRuntimeApi<B> + EthereumRuntimeRPCApi<B>,
-		BE: Backend<B> + 'static,
-		BE::State: StateBackend<BlakeTwo256>,
-		P: TransactionPool<Block=B> + Send + Sync + 'static,
-		A: ChainApi<Block=B> + 'static,
-		CT: fp_rpc::ConvertTransaction<<B as BlockT>::Extrinsic> + Send + Sync + 'static,
+where
+	B: BlockT<Hash = H256> + Send + Sync + 'static,
+	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+	C: HeaderBackend<B> + Send + Sync + 'static,
+	C::Api: BlockBuilder<B> + ConvertTransactionRuntimeApi<B> + EthereumRuntimeRPCApi<B>,
+	BE: Backend<B> + 'static,
+	BE::State: StateBackend<BlakeTwo256>,
+	P: TransactionPool<Block = B> + Send + Sync + 'static,
+	A: ChainApi<Block = B> + 'static,
+	CT: fp_rpc::ConvertTransaction<<B as BlockT>::Extrinsic> + Send + Sync + 'static,
 {
 	fn protocol_version(&self) -> Result<u64> {
 		Ok(1)
@@ -1056,7 +1063,9 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 					{
 						Ok(extrinsic) => extrinsic,
 						Err(_) => {
-							return Box::pin(future::err(internal_err("cannot access runtime api")));
+							return Box::pin(future::err(internal_err(
+								"cannot access runtime api",
+							)));
 						}
 					}
 				} else {
@@ -1148,7 +1157,9 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 					{
 						Ok(extrinsic) => extrinsic,
 						Err(_) => {
-							return Box::pin(future::err(internal_err("cannot access runtime api")));
+							return Box::pin(future::err(internal_err(
+								"cannot access runtime api",
+							)));
 						}
 					}
 				} else {
@@ -1238,7 +1249,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
 				} else {
 					#[allow(deprecated)]
-						let legacy_block = api.current_block_before_version_2(&id)
+					let legacy_block = api.current_block_before_version_2(&id)
 						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?;
 					if let Some(block) = legacy_block {
 						Some(block.into())
@@ -1262,7 +1273,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 				if api_version == 1 {
 					// Legacy pre-london
 					#[allow(deprecated)]
-						let info = api.call_before_version_2(
+					let info = api.call_before_version_2(
 						&id,
 						from.unwrap_or_default(),
 						to,
@@ -1273,15 +1284,15 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 						nonce,
 						false,
 					)
-						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &info.value)?;
 					Ok(Bytes(info.value))
 				} else if api_version >= 2 && api_version < 4 {
 					// Post-london
 					#[allow(deprecated)]
-						let info = api.call_before_version_4(
+					let info = api.call_before_version_4(
 						&id,
 						from.unwrap_or_default(),
 						to,
@@ -1293,8 +1304,8 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 						nonce,
 						false,
 					)
-						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &info.value)?;
 					Ok(Bytes(info.value))
@@ -1335,7 +1346,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 				if api_version == 1 {
 					// Legacy pre-london
 					#[allow(deprecated)]
-						let info = api.create_before_version_2(
+					let info = api.create_before_version_2(
 						&id,
 						from.unwrap_or_default(),
 						data,
@@ -1345,8 +1356,8 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 						nonce,
 						false,
 					)
-						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &[])?;
 
@@ -1357,7 +1368,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 				} else if api_version >= 2 && api_version < 4 {
 					// Post-london
 					#[allow(deprecated)]
-						let info = api.create_before_version_4(
+					let info = api.create_before_version_4(
 						&id,
 						from.unwrap_or_default(),
 						data,
@@ -1368,8 +1379,8 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 						nonce,
 						false,
 					)
-						.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
-						.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
+					.map_err(|err| internal_err(format!("runtime error: {:?}", err)))?
+					.map_err(|err| internal_err(format!("execution fatal: {:?}", err)))?;
 
 					error_on_execution_failure(&info.exit_reason, &[])?;
 
@@ -1678,9 +1689,9 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 				})
 			};
 			let api_version = if let Ok(Some(api_version)) =
-			client
-				.runtime_api()
-				.api_version::<dyn EthereumRuntimeRPCApi<B>>(&BlockId::Hash(best_hash))
+				client
+					.runtime_api()
+					.api_version::<dyn EthereumRuntimeRPCApi<B>>(&BlockId::Hash(best_hash))
 			{
 				api_version
 			} else {
@@ -1813,7 +1824,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 				hash,
 				true,
 			)
-				.map_err(|err| internal_err(format!("{:?}", err)))?
+			.map_err(|err| internal_err(format!("{:?}", err)))?
 			{
 				Some((hash, index)) => (hash, index as usize),
 				None => {
@@ -1821,7 +1832,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 					let best_block: BlockId<B> = BlockId::Hash(client.info().best_hash);
 
 					let api_version = if let Ok(Some(api_version)) =
-					api.api_version::<dyn EthereumRuntimeRPCApi<B>>(&best_block)
+						api.api_version::<dyn EthereumRuntimeRPCApi<B>>(&best_block)
 					{
 						api_version
 					} else {
@@ -1860,7 +1871,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 						})?
 					} else {
 						#[allow(deprecated)]
-							let legacy = api.extrinsic_filter_before_version_2(&best_block, xts)
+						let legacy = api.extrinsic_filter_before_version_2(&best_block, xts)
 							.map_err(|err| {
 								internal_err(format!(
 									"fetch runtime extrinsic filter failed: {:?}",
@@ -1960,7 +1971,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 			match (block, statuses) {
 				(Some(block), Some(statuses)) => {
 					if let (Some(transaction), Some(status)) =
-					(block.transactions.get(index), statuses.get(index))
+						(block.transactions.get(index), statuses.get(index))
 					{
 						return Ok(Some(transaction_build(
 							transaction.clone(),
@@ -2020,7 +2031,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 			match (block, statuses) {
 				(Some(block), Some(statuses)) => {
 					if let (Some(transaction), Some(status)) =
-					(block.transactions.get(index), statuses.get(index))
+						(block.transactions.get(index), statuses.get(index))
 					{
 						return Ok(Some(transaction_build(
 							transaction.clone(),
@@ -2051,7 +2062,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 				hash,
 				true,
 			)
-				.map_err(|err| internal_err(format!("{:?}", err)))?
+			.map_err(|err| internal_err(format!("{:?}", err)))?
 			{
 				Some((hash, index)) => (hash, index as usize),
 				None => return Ok(None),
@@ -2289,7 +2300,7 @@ impl<B, C, P, CT, BE, H: ExHashT, A> EthApiT for EthApi<B, C, P, CT, BE, H, A>
 					from_number,
 					current_number,
 				)
-					.await?;
+				.await?;
 			}
 			Ok(ret)
 		})
@@ -2503,9 +2514,9 @@ impl<B: BlockT, C, BE> EthFilterApi<B, C, BE> {
 }
 
 impl<B, C, BE> EthFilterApi<B, C, BE>
-	where
-		B: BlockT<Hash=H256> + Send + Sync + 'static,
-		C: HeaderBackend<B> + Send + Sync + 'static,
+where
+	B: BlockT<Hash = H256> + Send + Sync + 'static,
+	C: HeaderBackend<B> + Send + Sync + 'static,
 {
 	fn create_filter(&self, filter_type: FilterType) -> Result<U256> {
 		let block_number =
@@ -2541,13 +2552,13 @@ impl<B, C, BE> EthFilterApi<B, C, BE>
 }
 
 impl<B, C, BE> EthFilterApiT for EthFilterApi<B, C, BE>
-	where
-		B: BlockT<Hash=H256> + Send + Sync + 'static,
-		C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
-		C: HeaderBackend<B> + Send + Sync + 'static,
-		C::Api: EthereumRuntimeRPCApi<B>,
-		BE: Backend<B> + 'static,
-		BE::State: StateBackend<BlakeTwo256>,
+where
+	B: BlockT<Hash = H256> + Send + Sync + 'static,
+	C: ProvideRuntimeApi<B> + StorageProvider<B, BE>,
+	C: HeaderBackend<B> + Send + Sync + 'static,
+	C::Api: EthereumRuntimeRPCApi<B>,
+	BE: Backend<B> + 'static,
+	BE::State: StateBackend<BlakeTwo256>,
 {
 	fn new_filter(&self, filter: Filter) -> Result<U256> {
 		self.create_filter(FilterType::Log(filter))
@@ -2711,7 +2722,7 @@ impl<B, C, BE> EthFilterApiT for EthFilterApi<B, C, BE>
 						from_number,
 						current_number,
 					)
-						.await?;
+					.await?;
 
 					Ok(FilterChanges::Logs(ret))
 				}
@@ -2785,7 +2796,7 @@ impl<B, C, BE> EthFilterApiT for EthFilterApi<B, C, BE>
 				from_number,
 				current_number,
 			)
-				.await?;
+			.await?;
 			Ok(ret)
 		})
 	}
@@ -2810,13 +2821,13 @@ impl<B, C, BE> EthFilterApiT for EthFilterApi<B, C, BE>
 pub struct EthTask<B, C, BE>(PhantomData<(B, C, BE)>);
 
 impl<B, C, BE> EthTask<B, C, BE>
-	where
-		B: BlockT<Hash=H256>,
-		C: ProvideRuntimeApi<B> + StorageProvider<B, BE> + BlockchainEvents<B>,
-		C: HeaderBackend<B> + Send + Sync + 'static,
-		C::Api: EthereumRuntimeRPCApi<B>,
-		BE: Backend<B> + 'static,
-		BE::State: StateBackend<BlakeTwo256>,
+where
+	B: BlockT<Hash = H256>,
+	C: ProvideRuntimeApi<B> + StorageProvider<B, BE> + BlockchainEvents<B>,
+	C: HeaderBackend<B> + Send + Sync + 'static,
+	C::Api: EthereumRuntimeRPCApi<B>,
+	BE: Backend<B> + 'static,
+	BE::State: StateBackend<BlakeTwo256>,
 {
 	/// Task that caches at which best hash a new EthereumStorageSchema was inserted in the Runtime Storage.
 	pub async fn ethereum_schema_cache_task(client: Arc<C>, backend: Arc<fc_db::Backend<B>>) {
@@ -2869,7 +2880,7 @@ impl<B, C, BE> EthTask<B, C, BE>
 								Decode::decode(&mut &data.0[..]).unwrap();
 							// Cache new entry and overwrite the old database value.
 							if let Ok(Some(old_cache)) =
-							frontier_backend_client::load_cached_schema::<B>(backend.as_ref())
+								frontier_backend_client::load_cached_schema::<B>(backend.as_ref())
 							{
 								let mut new_cache: Vec<(EthereumStorageSchema, H256)> = old_cache;
 								match &new_cache[..] {
@@ -2885,12 +2896,12 @@ impl<B, C, BE> EthTask<B, C, BE>
 											backend.as_ref(),
 											new_cache,
 										)
-											.map_err(|err| {
-												warn!(
+										.map_err(|err| {
+											warn!(
 												"Error schema cache insert for genesis: {:?}",
 												err
 											);
-											});
+										});
 									}
 								}
 							} else {
@@ -3064,7 +3075,7 @@ impl<B, C, BE> EthTask<B, C, BE>
 		// Commits the result to cache
 		let commit_if_any = |item: FeeHistoryCacheItem, key: Option<u64>| {
 			if let (Some(block_number), Ok(fee_history_cache)) =
-			(key, &mut fee_history_cache.lock())
+				(key, &mut fee_history_cache.lock())
 			{
 				fee_history_cache.insert(block_number, item);
 				// We want to remain within the configured cache bounds.
