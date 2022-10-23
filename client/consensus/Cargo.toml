@@ -11,13 +11,13 @@ repository = "https://github.com/bifrost-platform/frontier/"
 async-trait = "0.1"
 thiserror = "1.0"
 
-sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
-sp-block-builder = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
-sp-blockchain = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
-sp-consensus = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
-sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
-sc-client-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
-sc-consensus = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0" }
+sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-block-builder = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-blockchain = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-consensus = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-client-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
+sc-consensus = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1" }
 
 fp-consensus = { version = "2.0.0-dev", path = "../../primitives/consensus" }
 fp-rpc = { version = "3.0.0-dev", path = "../../primitives/rpc" }
