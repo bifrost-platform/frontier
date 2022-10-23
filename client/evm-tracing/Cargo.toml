@@ -17,4 +17,4 @@ fp-rpc-debug = { path = "../../primitives/rpc-debug", default-features = false }
 
 # Substrate
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
-sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "testnet-fork", default-features = false }
+sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.0", default-features = false }
