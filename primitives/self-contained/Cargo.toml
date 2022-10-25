@@ -11,7 +11,7 @@ documentation = "https://docs.rs/fp-ethereum"
 
 [dependencies]
 ethereum = { version = "0.11.1", default-features = false, features = ["with-codec"] }
-serde = { version = "1.0.101", features = ["derive"], optional = true }
+serde = { version = "1.0.147", features = ["derive"], optional = true }
 
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
 scale-info = { version = "1.0.0", default-features = false, features = ["derive"] }
