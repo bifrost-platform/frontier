@@ -7,7 +7,7 @@ description = "RPC traits of Ethereum."
 license = ""
 
 [dependencies]
-ethereum = { version = "0.11.1", features = ["with-codec", "with-serde"] }
+ethereum = { version = "0.12.0", features = ["with-codec", "with-serde"] }
 ethereum-types = "0.12"
 futures = { version = "0.3.1", features = ["compat"] }
 jsonrpc-core = "18.0"
