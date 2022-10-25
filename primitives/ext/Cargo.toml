@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ethereum-types = { version = "0.12", default-features = false }
+ethereum-types = { version = "0.14", default-features = false }
 
 fp-rpc-evm-tracing-events = { path = "../rpc-evm-tracing-events", default-features = false }
 

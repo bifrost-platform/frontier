@@ -8,7 +8,7 @@ license = ""
 
 [dependencies]
 ethereum = { version = "0.11.1", features = ["with-codec"] }
-ethereum-types = "0.12"
+ethereum-types = "0.14"
 evm = "0.33.1"
 futures = { version = "0.3.1", features = ["compat"] }
 hex = "0.4"
