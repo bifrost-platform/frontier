@@ -15,11 +15,11 @@ serde_json = { version = "1.0", optional = true }
 
 # Substrate
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
-sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-io = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
+sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-io = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
 
 [features]
 default = ["std"]

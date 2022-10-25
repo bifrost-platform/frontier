@@ -12,11 +12,11 @@ ethereum-types = { version = "0.12", default-features = false }
 
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
 scale-info = { version = "1.0.0", default-features = false, features = ["derive"] }
-sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-io = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
-sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-substrate-v1.0.1", default-features = false }
+sp-api = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-io = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
+sp-std = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.0.2", default-features = false }
 
 fp-evm = { version = "3.0.0-dev", default-features = false, path = "../../primitives/evm" }
 
