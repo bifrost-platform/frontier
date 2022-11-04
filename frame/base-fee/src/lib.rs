@@ -210,6 +210,10 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
+		/// Sets the base fee. The given fee parameter must be specified in GWEI units.
+		/// Every block has a base fee which acts as a reserve price.
+		/// To be eligible for inclusion in a block the offered price per gas must at least equal the base fee.
+		/// The base fee is calculated independently of the current block and is instead determined by the blocks before it
 		pub fn set_base_fee_per_gas(origin: OriginFor<T>, fee: U256) -> DispatchResult {
 			ensure_root(origin)?;
 			let _ = Self::set_base_fee_per_gas_inner(fee);
@@ -217,6 +221,7 @@ pub mod pallet {
 			Ok(())
 		}
 
+		/// Sets the activation of elasticity that defines the base fee growth.
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
 		pub fn set_is_active(origin: OriginFor<T>, is_active: bool) -> DispatchResult {
 			ensure_root(origin)?;
@@ -225,6 +230,10 @@ pub mod pallet {
 			Ok(())
 		}
 
+		/// Sets the elasticity that defines the base fee growth.
+		/// The base fee is calculated by a formula that compares the size of the previous block (the amount of gas used for all the transactions) with the target size.
+		/// The base fee will increase by a maximum of elasticity % per block if the target block size is exceeded.
+		/// This exponential growth makes it economically non-viable for block size to remain high indefinitely.
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
 		pub fn set_elasticity(origin: OriginFor<T>, elasticity: Permill) -> DispatchResult {
 			ensure_root(origin)?;
