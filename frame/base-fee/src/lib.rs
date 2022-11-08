@@ -210,7 +210,7 @@ pub mod pallet {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
-		/// Sets the base fee. The given fee parameter must be specified in GWEI units.
+		/// Sets the base fee. The given fee parameter must be specified in WEI units.
 		/// Every block has a base fee which acts as a reserve price.
 		/// To be eligible for inclusion in a block the offered price per gas must at least equal the base fee.
 		/// The base fee is calculated independently of the current block and is instead determined by the blocks before it
