@@ -12,8 +12,8 @@ kvdb-rocksdb = "0.14.0"
 parking_lot = "0.11.2"
 
 codec = { package = "parity-scale-codec", version = "2.0.0", features = ["derive"] }
-sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.1.0" }
-sp-database = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.1.0" }
-sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.1.0" }
+sp-core = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.1.1" }
+sp-database = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.1.1" }
+sp-runtime = { git = "ssh://git@github.com/bifrost-platform/substrate.git", branch = "bifrost-node-v1.1.1" }
 
 fp-storage = { version = "2.0.0-dev", path = "../../primitives/storage" }
