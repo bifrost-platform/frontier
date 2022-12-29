@@ -86,7 +86,7 @@ use sp_runtime::{
 	traits::{BadOrigin, Saturating, UniqueSaturatedInto, Zero},
 	AccountId32,
 };
-use sp_std::vec::Vec;
+use sp_std::{cmp::min, vec::Vec};
 
 pub use self::{pallet::*, runner::Runner};
 
@@ -374,21 +374,25 @@ pub mod pallet {
 	}
 
 	#[pallet::genesis_build]
-	impl<T: Config> GenesisBuild<T> for GenesisConfig {
+	impl<T: Config> GenesisBuild<T> for GenesisConfig
+	where
+		U256: UniqueSaturatedInto<BalanceOf<T>>,
+	{
 		fn build(&self) {
+			const MAX_ACCOUNT_NONCE: usize = 100;
 			for (address, account) in &self.accounts {
 				let account_id = T::AddressMapping::into_account_id(*address);
 
 				// ASSUME: in one single EVM transaction, the nonce will not increase more than
 				// `u128::max_value()`.
-				for _ in 0..account.nonce.low_u128() {
+				for _ in 0..min(
+					MAX_ACCOUNT_NONCE,
+					UniqueSaturatedInto::<usize>::unique_saturated_into(account.nonce),
+				) {
 					frame_system::Pallet::<T>::inc_account_nonce(&account_id);
 				}
 
-				T::Currency::deposit_creating(
-					&account_id,
-					account.balance.low_u128().unique_saturated_into(),
-				);
+				T::Currency::deposit_creating(&account_id, account.balance.unique_saturated_into());
 
 				Pallet::<T>::create_account(*address, account.code.clone());
 
@@ -691,6 +695,7 @@ where
 		Opposite = C::PositiveImbalance,
 	>,
 	OU: OnUnbalanced<NegativeImbalanceOf<C, T>>,
+	U256: UniqueSaturatedInto<<C as Currency<<T as frame_system::Config>::AccountId>>::Balance>,
 {
 	// Kept type as Option to satisfy bound of Default
 	type LiquidityInfo = Option<NegativeImbalanceOf<C, T>>;
@@ -699,7 +704,7 @@ where
 		let account_id = T::AddressMapping::into_account_id(*who);
 		let imbalance = C::withdraw(
 			&account_id,
-			fee.low_u128().unique_saturated_into(),
+			fee.unique_saturated_into(),
 			WithdrawReasons::FEE,
 			ExistenceRequirement::AllowDeath,
 		)
@@ -718,7 +723,7 @@ where
 			// Calculate how much refund we should return
 			let refund_amount = paid
 				.peek()
-				.saturating_sub(corrected_fee.low_u128().unique_saturated_into());
+				.saturating_sub(corrected_fee.unique_saturated_into());
 			// refund to the account that paid the fees. If this fails, the
 			// account might have dropped below the existential balance. In
 			// that case we don't refund anything.
@@ -765,7 +770,8 @@ impl<T> OnChargeEVMTransaction<T> for ()
 	<T::Currency as Currency<<T as frame_system::Config>::AccountId>>::PositiveImbalance:
 		Imbalance<<T::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance, Opposite = <T::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance>,
 	<T::Currency as Currency<<T as frame_system::Config>::AccountId>>::NegativeImbalance:
-		Imbalance<<T::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance, Opposite = <T::Currency as Currency<<T as frame_system::Config>::AccountId>>::PositiveImbalance>, {
+	Imbalance<<T::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance, Opposite = <T::Currency as Currency<<T as frame_system::Config>::AccountId>>::PositiveImbalance>,
+	U256: UniqueSaturatedInto<BalanceOf<T>> {
 	// Kept type as Option to satisfy bound of Default
 	type LiquidityInfo = Option<NegativeImbalanceOf<T::Currency, T>>;
 
