@@ -10,10 +10,10 @@ fp-rpc-evm-tracing-events = { path = "../../primitives/rpc-evm-tracing-events", 
 fp-ext = { path = "../../primitives/ext", default-features = false }
 
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false, features = ["derive"] }
-sp-io = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.2" }
-sp-core = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.2" }
-sp-runtime = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.2" }
-sp-std = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.2" }
+sp-io = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "minor-fix" }
+sp-core = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "minor-fix" }
+sp-runtime = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "minor-fix" }
+sp-std = { default-features = false, git = "https://github.com/bifrost-platform/substrate", branch = "minor-fix" }
 
 ethereum-types = { version = "0.12", default-features = false }
 evm = { version = "0.33.1", default-features = false, features = ["with-codec"] }
