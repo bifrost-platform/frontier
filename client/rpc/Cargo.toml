@@ -14,7 +14,7 @@ futures = { version = "0.3.1", features = ["compat"] }
 hex = "0.4"
 hex-literal = "0.3.4"
 libsecp256k1 = "0.7"
-log = "0.4.8"
+log = "0.4.17"
 lru = "0.6.6"
 jsonrpc-core = "18.0"
 jsonrpc-core-client = "18.0"
