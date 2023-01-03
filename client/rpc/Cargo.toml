@@ -26,20 +26,20 @@ tracing = "0.1.34"
 sha3 = "0.9"
 
 codec = { package = "parity-scale-codec", version = "2.0.0" }
-sp-api = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sp-blockchain = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sp-block-builder = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sp-core = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sp-io = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sp-runtime = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sp-storage = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-client-api = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-network = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-utils = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-rpc = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-service = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-transaction-pool = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
-sc-transaction-pool-api = { git = "https://github.com/bifrost-platform/substrate", branch = "bifrost-node-v1.1.3" }
+sp-api = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sp-blockchain = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sp-block-builder = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sp-core = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sp-io = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sp-runtime = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sp-storage = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-client-api = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-network = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-utils = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-rpc = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-service = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-transaction-pool = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
+sc-transaction-pool-api = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4" }
 
 fp-rpc = { path = "../../primitives/rpc" }
 fp-rpc-debug = { path = "../../primitives/rpc-debug" }
