@@ -12,9 +12,9 @@ fp-rpc-evm-tracing-events = { path = "../rpc-evm-tracing-events", default-featur
 
 # Substrate
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
-sp-externalities = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4", default-features = false }
-sp-runtime-interface = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4", default-features = false }
-sp-std = { git = "https://github.com/bifrost-platform/substrate", branch = "thebifrost-legacy-v1.1.4", default-features = false }
+sp-externalities = { git = "https://github.com/bifrost-platform/substrate", branch = "bugfix", default-features = false }
+sp-runtime-interface = { git = "https://github.com/bifrost-platform/substrate", branch = "bugfix", default-features = false }
+sp-std = { git = "https://github.com/bifrost-platform/substrate", branch = "bugfix", default-features = false }
 
 
 [features]
